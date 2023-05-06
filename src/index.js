@@ -19,13 +19,30 @@ app.engine('hbs', handlebars.engine({
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 
+// Middleware
+app.use(express.urlencoded({
+  extended: true,
+})); // Để xử lý form data gửi post
+app.use(express.json()); // Gửi từ code js lên thì xử lý
+
 // Route
 app.get('/', (req, res) => {
   res.render('home');
 });
 
 app.get('/news', (req, res) => {
+  console.log(req.query.q);
   res.render('news');
+});
+
+app.get('/search', (req, res) => {
+  // console.log(req.query.q);
+  res.render('search');
+});
+
+app.post('/search', (req, res) => {
+  console.log(req.body.q);
+  res.send('Use Post Successfully');
 });
 
 // Run App
