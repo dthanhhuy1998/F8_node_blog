@@ -6,10 +6,13 @@ const handlebars = require('express-handlebars');
 const app = express();
 const port = 3000;
 
+// Route
+const route = require('./routes'); // auto import index.js file
+
 // Route for static file
 app.use(express.static(path.join(__dirname, 'public')));
 
-// HTTP Logger
+// HTTP Logger 
 app.use(morgan('combined'));
 
 // Template engine
@@ -25,25 +28,8 @@ app.use(express.urlencoded({
 })); // Để xử lý form data gửi post
 app.use(express.json()); // Gửi từ code js lên thì xử lý
 
-// Route
-app.get('/', (req, res) => {
-  res.render('home');
-});
-
-app.get('/news', (req, res) => {
-  console.log(req.query.q);
-  res.render('news');
-});
-
-app.get('/search', (req, res) => {
-  // console.log(req.query.q);
-  res.render('search');
-});
-
-app.post('/search', (req, res) => {
-  console.log(req.body.q);
-  res.send('Use Post Successfully');
-});
+// Route init
+route(app);
 
 // Run App
 app.listen(port, () => {
