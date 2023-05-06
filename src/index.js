@@ -8,6 +8,10 @@ const port = 3000;
 
 // Route
 const route = require('./routes'); // auto import index.js file
+const db = require('./config/db');
+
+// Connect DB
+db.connect();
 
 // Route for static file
 app.use(express.static(path.join(__dirname, 'public')));
@@ -18,9 +22,9 @@ app.use(morgan('combined'));
 // Template engine
 app.engine('hbs', handlebars.engine({
   extname: '.hbs'
-}));
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'resources/views'));
+   }));
+   app.set("view engine", 'hbs');
+   app.set('views', path.join(__dirname, 'resources', 'views'));
 
 // Middleware
 app.use(express.urlencoded({
@@ -33,5 +37,5 @@ route(app);
 
 // Run App
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`App listening on port ${port}`)
 });
