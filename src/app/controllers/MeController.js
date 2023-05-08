@@ -1,16 +1,28 @@
 const Course = require('../models/Course');
-const { multipleMongooseToObject } = require('../../util/mongoose');
+const { multipleMongooseToObject,  mongooseToObject } = require('../../util/mongoose');
 
 class NewsController {
     // [GET] me/stored/courses
     storedCourses(req, res, next) {
-        Course.find({})
-            .then(courses => {
-                res.render('me/courses', { 
+        Promise.all([Course.find({}), Course.countDocumentsDeleted()])
+            .then(([courses, deleteCount]) => {
+                res.render('me/courses', {
+                    deleteCount,
                     courses: multipleMongooseToObject(courses),
                 });
             })
-            .catch(next); // catch(err => next(err))
+            .catch(next);
+    }
+
+    // [GET] me/stored/courses
+    trashCourses(req, res, next) {
+        Course.findDeleted({})
+            .then(courses => {
+                res.render('me/trash', { 
+                    courses: multipleMongooseToObject(courses) 
+                });
+            })
+            .catch(next);
     }
 }
 
