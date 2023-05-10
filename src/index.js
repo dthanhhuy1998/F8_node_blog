@@ -19,6 +19,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // method override
 app.use(methodOverride('_method'));
+app.use(bacBaoVe);
+
+// Middleware / có nhiều middleware
+// 1 middleware không next là bị treo
+// Muốn middleware nào chạy trước thì đặt trước
+function bacBaoVe(req, res, next) {
+  if(['vethuong', 'vevip'].includes(req.query.ve)) {
+    req.face = 'Gach gach gach';
+    return next();
+  }
+  // Khi không thỏa đk
+  res.status(403).json({message: 'Access denied'});
+}
+
+app.get('/middleware', 
+  function(req, res, next) {
+    res.json({
+      message: 'Access successfully.',
+      face: req.face
+    });
+  });
 
 // HTTP Logger 
 app.use(morgan('combined'));
@@ -33,7 +54,6 @@ app.engine('hbs', handlebars.engine({
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources', 'views'));
 
-// Middleware
 app.use(express.urlencoded({
   extended: true,
 })); // Để xử lý form data gửi post

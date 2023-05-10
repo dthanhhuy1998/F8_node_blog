@@ -4,7 +4,10 @@ var router = express.Router();
 const courseController = new require('../app/controllers/CourseController');
 
 // set route
-router.get('/create', courseController.create);
+router.get('/create', function(req, res, next) {
+    if(req.query.ve === 'vip') return next();
+    res.status(404).json({message: 'Access denied'});    
+}, courseController.create);
 router.post('/store', courseController.store);
 router.get('/:id/edit', courseController.edit);
 router.post('/handle-form-actions', courseController.handleFormActions);
