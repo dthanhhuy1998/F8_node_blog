@@ -4,6 +4,9 @@ const morgan = require('morgan');
 const methodOverride = require('method-override');
 const handlebars = require('express-handlebars');
 
+// middleware
+const SortMiddleware = require('./app/middlewares/SortMiddleware');
+
 const app = express();
 const port = 3000;
 
@@ -19,7 +22,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // method override
 app.use(methodOverride('_method'));
-app.use(bacBaoVe);
+
+// Custom middleware
+app.use(SortMiddleware);
+
+// Test Middleware
+// app.use(bacBaoVe);
 
 // Middleware / có nhiều middleware
 // 1 middleware không next là bị treo
@@ -49,6 +57,27 @@ app.engine('hbs', handlebars.engine({
   extname: '.hbs',
   helpers: {
     sum: (a, b) =>  a + b,
+    sortable: (field, sort) => {
+      const sortType = field === sort.colunm ? sort.type : 'default';
+
+      const icons = {
+        default: 'bi bi-arrow-down-up',
+        asc: 'bi bi-arrow-up',
+        desc: 'bi bi-arrow-down'
+      }
+      const types = {
+        default: 'desc',
+        asc: 'desc',
+        desc: 'asc'
+      }
+
+      const icon = icons[sortType];
+      const type = types[sortType];
+
+      return `<a href="?_sort&colunm=${field}&type=${type}">
+        <i class="${icon}"></i>
+      </a>`;
+    }
   }
 }));
 app.set('view engine', 'hbs');

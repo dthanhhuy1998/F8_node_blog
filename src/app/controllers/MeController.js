@@ -4,7 +4,15 @@ const { multipleMongooseToObject,  mongooseToObject } = require('../../util/mong
 class NewsController {
     // [GET] me/stored/courses
     storedCourses(req, res, next) {
-        Promise.all([Course.find({}), Course.countDocumentsDeleted()])
+        let courseQuery = Course.find({});
+        
+        if(req.query.hasOwnProperty('_sort')) {
+            courseQuery = courseQuery.sort({
+                [req.query.colunm]: req.query.type
+            });
+        }
+
+        Promise.all([courseQuery, Course.countDocumentsDeleted()])
             .then(([courses, deleteCount]) => {
                 res.render('me/courses', {
                     deleteCount,
