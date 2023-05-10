@@ -5,7 +5,7 @@ class NewsController {
     // [GET] me/stored/courses
     storedCourses(req, res, next) {
         let courseQuery = Course.find({});
-        
+
         if(req.query.hasOwnProperty('_sort')) {
             courseQuery = courseQuery.sort({
                 [req.query.colunm]: req.query.type
